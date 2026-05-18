@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authApi } from '@services/api';
+import { authApi, AUTH_TOKEN_STORAGE_KEY } from '@services/api';
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -18,13 +18,17 @@ const useAuthStore = create((set, get) => ({
         localStorage.setItem('zoomer_user', JSON.stringify(data));
       } catch {
         localStorage.removeItem('zoomer_user');
+        localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
         set({ user: null, isAuthenticated: false });
       }
     }
   },
 
-  _setAuth: (user) => {
+  _setAuth: (user, token) => {
     localStorage.setItem('zoomer_user', JSON.stringify(user));
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+    }
     set({ user, isAuthenticated: true, isLoading: false });
   },
 
@@ -32,11 +36,22 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await authApi.telegramLogin(telegramData);
-      get()._setAuth(data.user);
+      get()._setAuth(data.user, data.token);
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      return { success: false, error: error.response?.data?.detail || 'Ошибка авторизации' };
+      const detail = error.response?.data?.detail;
+      let message = 'Ошибка авторизации';
+      if (Array.isArray(detail)) {
+        message = detail.map((e) => e?.msg || String(e)).join(' ') || message;
+      } else if (typeof detail === 'string') {
+        message = detail;
+      } else if (detail && typeof detail === 'object' && typeof detail.msg === 'string') {
+        message = detail.msg;
+      } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+        message = 'Нет связи с API (запустите бэкенд и проверьте /api через тот же хост).';
+      }
+      return { success: false, error: message };
     }
   },
 
@@ -59,7 +74,7 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await authApi.login({ email, password });
-      get()._setAuth(data.user);
+      get()._setAuth(data.user, data.token);
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -75,7 +90,7 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await authApi.verifyEmail({ email, code });
-      get()._setAuth(data.user);
+      get()._setAuth(data.user, data.token);
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -87,7 +102,7 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const { data } = await authApi.googleLogin({ credential });
-      get()._setAuth(data.user);
+      get()._setAuth(data.user, data.token);
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -108,6 +123,7 @@ const useAuthStore = create((set, get) => ({
   logout: async () => {
     try { await authApi.logout(); } catch {}
     localStorage.removeItem('zoomer_user');
+    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
     set({ user: null, isAuthenticated: false });
   },
 }));

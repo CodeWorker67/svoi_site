@@ -78,110 +78,47 @@ export default function LoginPage() {
 }
 
 function TelegramAuth() {
-  const navigate = useNavigate();
-  const [polling, setPolling] = useState(false);
-  const [pollToken, setPollToken] = useState(null);
-  const pollRef = useRef(null);
-
-  const handleClick = async () => {
-    try {
-      const { data } = await authApi.generateTelegramToken();
-      if (data.deeplink && data.token) {
-        // Validate deeplink URL
-        const url = data.deeplink;
-        if (!url.startsWith('https://t.me/') && !url.startsWith('tg://')) {
-          toast.error('Некорректная ссылка');
-          return;
-        }
-        setPollToken(data.token);
-        setPolling(true);
-        window.open(url, '_blank');
-      }
-    } catch {
-      toast.error('Не удалось создать ссылку');
-    }
-  };
+  const containerRef = useRef(null);
+  const botUsername = TELEGRAM.BOT_NAME.replace(/^@/, '').trim();
 
   useEffect(() => {
-    if (!polling || !pollToken) return;
+    if (!botUsername) {
+      toast.error('Не задано имя бота (VITE_TELEGRAM_BOT_NAME)');
+      return undefined;
+    }
 
-    let attempts = 0;
-    const maxAttempts = 60;
+    const root = containerRef.current;
+    if (!root) return undefined;
 
-    const check = async () => {
-      try {
-        const { data } = await authApi.checkTelegramStatus(pollToken);
-        if (data.status === 'authenticated') {
-          clearInterval(pollRef.current);
-          // Cookie is set by backend, just save user for display
-          localStorage.setItem('zoomer_user', JSON.stringify(data.user));
-          toast.success('Вы вошли через Telegram!');
-          window.location.href = '/dashboard';
-          return;
-        }
-        if (data.status === 'expired') {
-          clearInterval(pollRef.current);
-          setPolling(false);
-          toast.error('Время истекло, попробуйте снова');
-        }
-      } catch {}
-      attempts++;
-      if (attempts >= maxAttempts) {
-        clearInterval(pollRef.current);
-        setPolling(false);
-        toast.error('Время истекло');
-      }
-    };
+    const authUrl = `${window.location.origin}${ROUTES.LOGIN_TELEGRAM_CALLBACK}`;
 
-    // First check after 3 sec, then every 5 sec
-    const timeout = setTimeout(() => {
-      check();
-      pollRef.current = setInterval(check, 5000);
-    }, 3000);
-
-    // Also check on window focus (user returns from Telegram)
-    const onFocus = () => check();
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) check();
-    });
+    root.innerHTML = '';
+    const script = document.createElement('script');
+    script.src = 'https://telegram.org/js/telegram-widget.js?22';
+    script.async = true;
+    script.setAttribute('data-telegram-login', botUsername);
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-radius', '12');
+    /** Редирект с параметрами — не зависит от popup/postMessage (COOP, мобильные браузеры). */
+    script.setAttribute('data-auth-url', authUrl);
+    root.appendChild(script);
 
     return () => {
-      clearTimeout(timeout);
-      clearInterval(pollRef.current);
-      window.removeEventListener('focus', onFocus);
+      root.innerHTML = '';
     };
-  }, [polling, pollToken]);
+  }, [botUsername]);
 
   return (
-    <>
-      {!polling ? (
-        <button
-          type="button"
-          onClick={handleClick}
-          className="w-full flex items-center justify-center gap-3 px-4 py-4 rounded-xl bg-[#2AABEE] hover:bg-[#229ED9] transition-all text-sm font-semibold text-white"
-        >
-          <Send className="w-5 h-5" />
-          Войти через Telegram
-        </button>
-      ) : (
-        <div className="text-center py-4">
-          <div className="w-8 h-8 border-2 border-[#2AABEE] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-white text-sm font-medium mb-1">Ожидаем подтверждение</p>
-          <p className="text-gray-400 text-xs">Нажмите Start в Telegram-боте</p>
-          <button
-            type="button"
-            onClick={() => { setPolling(false); setPollToken(null); }}
-            className="text-gray-500 text-xs mt-3 hover:text-white transition-colors"
-          >
-            Отмена
-          </button>
-        </div>
-      )}
-      <p className="text-gray-500 text-xs text-center mt-3">
-        Откроется приложение Telegram для подтверждения
+    <div className="space-y-3">
+      <div
+        ref={containerRef}
+        className="flex min-h-[56px] w-full flex-col items-center justify-center rounded-xl border border-zoomer-border bg-zoomer-dark/50 py-3 [&_iframe]:max-w-full"
+      />
+      <p className="text-center text-xs text-gray-500">
+        После «Войти как …» откроется Telegram, затем браузер вернёт вас на этот сайт — вход завершится
+        автоматически (без всплывающего окна сайта).
       </p>
-    </>
+    </div>
   );
 }
 

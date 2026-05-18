@@ -18,11 +18,28 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    // Туннели (ngrok / cloudflared / localtunnel) шлют Host с чужого домена — иначе Vite блокирует.
+    allowedHosts: [
+      '.ngrok-free.dev',
+      '.ngrok-free.app',
+      '.ngrok.io',
+      '.trycloudflare.com',
+      '.loca.lt',
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
+        /** Чтобы бэкенд выставил cookie Secure + SameSite=None под HTTPS (ngrok). */
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const raw = (req.headers['x-forwarded-proto'] || '').toString().split(',')[0].trim().toLowerCase();
+            if (raw === 'https') {
+              proxyReq.setHeader('X-Forwarded-Proto', 'https');
+            }
+          });
+        },
       },
     },
   },

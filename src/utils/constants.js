@@ -4,6 +4,8 @@ export const ROUTES = {
   SETUP: '/setup',
   SUPPORT: '/support',
   LOGIN: '/login',
+  /** Редирект Telegram Login Widget (data-auth-url), без popup postMessage */
+  LOGIN_TELEGRAM_CALLBACK: '/login/telegram-callback',
   DASHBOARD: '/dashboard',
   CHECKOUT: '/checkout',
   SUCCESS: '/success',
@@ -12,10 +14,10 @@ export const ROUTES = {
 };
 
 export const TELEGRAM = {
-  BOT_URL: 'https://t.me/Test3136_bot',
-  BOT_NAME: import.meta.env.VITE_TELEGRAM_BOT_NAME || 'Test3136_bot',
-  SUPPORT_URL: 'https://t.me/Test3136_bot',
-  CHANNEL_URL: 'https://t.me/Test3136_bot',
+  BOT_URL: 'https://t.me/zoomerskyvpn_bot',
+  BOT_NAME: import.meta.env.VITE_TELEGRAM_BOT_NAME || 'zoomerskyvpn_bot',
+  SUPPORT_URL: 'https://t.me/suppzoomvpn',
+  CHANNEL_URL: 'https://t.me/zoomerskydostup',
 };
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
