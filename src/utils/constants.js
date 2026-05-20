@@ -6,6 +6,8 @@ export const ROUTES = {
   LOGIN: '/login',
   /** Редирект Telegram Login Widget (data-auth-url), без popup postMessage */
   LOGIN_TELEGRAM_CALLBACK: '/login/telegram-callback',
+  /** Одноразовая ссылка из Telegram-бота (?token=…) */
+  LOGIN_BOT: '/auth/bot',
   DASHBOARD: '/dashboard',
   CHECKOUT: '/checkout',
   SUCCESS: '/success',

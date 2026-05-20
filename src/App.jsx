@@ -17,6 +17,7 @@ const SetupPage = lazy(() => import('@pages/public/SetupPage'));
 const SupportPage = lazy(() => import('@pages/public/SupportPage'));
 const LoginPage = lazy(() => import('@pages/auth/LoginPage'));
 const TelegramLoginCallbackPage = lazy(() => import('@pages/auth/TelegramLoginCallbackPage'));
+const BotLoginPage = lazy(() => import('@pages/auth/BotLoginPage'));
 const DashboardPage = lazy(() => import('@pages/dashboard/DashboardPage'));
 const CheckoutPage = lazy(() => import('@pages/checkout/CheckoutPage'));
 const SuccessPage = lazy(() => import('@pages/checkout/SuccessPage'));
@@ -62,6 +63,7 @@ function App() {
                     path={ROUTES.LOGIN_TELEGRAM_CALLBACK}
                     element={<TelegramLoginCallbackPage />}
                   />
+                  <Route path={ROUTES.LOGIN_BOT} element={<BotLoginPage />} />
                   <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
                   <Route path={ROUTES.SUCCESS} element={<SuccessPage />} />
                   <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />

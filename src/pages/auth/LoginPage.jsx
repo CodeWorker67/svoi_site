@@ -1,18 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+// import { useEffect, useRef, useState } from 'react'; // useRef — для TelegramAuth
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Send, Mail, ArrowLeft } from 'lucide-react';
+import { Shield, Mail, ArrowLeft } from 'lucide-react';
 import useAuthStore from '@stores/authStore';
 import { authApi } from '@services/api';
-import { ROUTES, TELEGRAM, GOOGLE_CLIENT_ID } from '@utils/constants';
+import { ROUTES, GOOGLE_CLIENT_ID } from '@utils/constants';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
-  const [authMethod, setAuthMethod] = useState('telegram');
+  // const [authMethod, setAuthMethod] = useState('telegram');
 
   useEffect(() => {
     if (isAuthenticated) navigate(ROUTES.DASHBOARD);
@@ -38,7 +39,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-white mb-2">Войти в ZoomerVPN</h1>
             <p className="text-gray-400 text-sm mb-6">Выберите способ входа</p>
 
-            {/* Method tabs */}
+            {/* Method tabs — вход через Telegram временно скрыт (раскомментируйте блок ниже и TelegramAuth)
             <div className="flex gap-1 mb-6 bg-zoomer-dark rounded-xl p-1">
               <button
                 onClick={() => setAuthMethod('telegram')}
@@ -62,6 +63,9 @@ export default function LoginPage() {
 
             {authMethod === 'telegram' && <TelegramAuth />}
             {authMethod === 'email' && <EmailAuth />}
+            */}
+
+            <EmailAuth />
 
             {/* Google — always visible */}
             <div className="flex items-center gap-3 my-4">
@@ -77,6 +81,9 @@ export default function LoginPage() {
   );
 }
 
+/*
+ * Вернуть вход через Telegram: импорт Send + TELEGRAM из constants, useRef;
+ * раскомментировать useState(authMethod), блок «Method tabs» в JSX и вызовы TelegramAuth / EmailAuth по вкладке.
 function TelegramAuth() {
   const containerRef = useRef(null);
   const botUsername = TELEGRAM.BOT_NAME.replace(/^@/, '').trim();
@@ -99,7 +106,7 @@ function TelegramAuth() {
     script.setAttribute('data-telegram-login', botUsername);
     script.setAttribute('data-size', 'large');
     script.setAttribute('data-radius', '12');
-    /** Редирект с параметрами — не зависит от popup/postMessage (COOP, мобильные браузеры). */
+    // Редирект с параметрами — не зависит от popup/postMessage (COOP, мобильные браузеры).
     script.setAttribute('data-auth-url', authUrl);
     root.appendChild(script);
 
@@ -121,6 +128,7 @@ function TelegramAuth() {
     </div>
   );
 }
+*/
 
 function GoogleLoginButton() {
   const navigate = useNavigate();

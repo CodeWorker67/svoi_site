@@ -32,6 +32,30 @@ const useAuthStore = create((set, get) => ({
     set({ user, isAuthenticated: true, isLoading: false });
   },
 
+  botLogin: async (oneTimeToken) => {
+    set({ isLoading: true });
+    try {
+      const response = await authApi.botLogin({ token: oneTimeToken });
+      const { data } = response;
+      const jwt =
+        data.token ||
+        response.headers['x-auth-token'] ||
+        response.headers['X-Auth-Token'];
+      get()._setAuth(data.user, jwt);
+      return { success: true };
+    } catch (error) {
+      set({ isLoading: false });
+      const detail = error.response?.data?.detail;
+      let message = 'Ссылка устарела или уже использована';
+      if (typeof detail === 'string') {
+        message = detail;
+      } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+        message = 'Нет связи с API (запустите бэкенд и проверьте /api через тот же хост).';
+      }
+      return { success: false, error: message };
+    }
+  },
+
   telegramLogin: async (telegramData) => {
     set({ isLoading: true });
     try {

@@ -34,7 +34,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('zoomer_user');
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      if (!window.location.pathname.includes('/login')) {
+      const path = window.location.pathname;
+      if (!path.includes('/login') && !path.includes('/auth/bot')) {
         window.location.href = '/login?reason=session_expired';
       }
     }
@@ -45,6 +46,7 @@ api.interceptors.response.use(
 // Auth
 export const authApi = {
   telegramLogin: (data) => api.post('/auth/telegram', data),
+  botLogin: (data) => api.post('/auth/bot-login', data),
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
   me: () => api.get('/auth/me'),
