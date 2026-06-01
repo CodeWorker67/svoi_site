@@ -5,7 +5,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { User, Key, Users, LogOut, Shield, Clock, Copy, Check, ExternalLink, Link2, Send, Mail, Zap, Wifi } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '@stores/authStore';
-import { userApi, trialApi, authApi } from '@services/api';
+import { userApi, /* trialApi, */ authApi } from '@services/api';
 import { TELEGRAM, ROUTES, BRAND_NAME, PRO_SUBSCRIPTION_LABEL } from '@utils/constants';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
@@ -54,7 +54,7 @@ export default function DashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-zoomer-neon text-white'
+                    ? 'surface-metallic shadow-neon'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -79,7 +79,7 @@ function OverviewTab() {
   const [sub, setSub] = useState(null);
   const [keys, setKeys] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [trialLoading, setTrialLoading] = useState(false);
+  // const [trialLoading, setTrialLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,24 +89,23 @@ function OverviewTab() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  const handleTrial = async () => {
-    setTrialLoading(true);
-    try {
-      const { data } = await trialApi.activate();
-      if (data.success) {
-        toast.success('Триал активирован! 5 дней бесплатно');
-        // Refresh data
-        const { data: newSub } = await userApi.subscription();
-        setSub(newSub);
-        const { data: newKeys } = await userApi.keys();
-        setKeys(newKeys);
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации');
-    } finally {
-      setTrialLoading(false);
-    }
-  };
+  // const handleTrial = async () => {
+  //   setTrialLoading(true);
+  //   try {
+  //     const { data } = await trialApi.activate();
+  //     if (data.success) {
+  //       toast.success('Триал активирован! 5 дней бесплатно');
+  //       const { data: newSub } = await userApi.subscription();
+  //       setSub(newSub);
+  //       const { data: newKeys } = await userApi.keys();
+  //       setKeys(newKeys);
+  //     }
+  //   } catch (err) {
+  //     toast.error(err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации');
+  //   } finally {
+  //     setTrialLoading(false);
+  //   }
+  // };
 
   const hasAnySub = sub?.pro?.active;
   const hasAnyKey = keys?.pro_url;
@@ -117,20 +116,28 @@ function OverviewTab() {
     <div className="space-y-6">
       {/* CTA — Trial or Setup */}
       {!hasAnySub && (
+        <Link to={ROUTES.PRICING}
+          className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"
+        >
+          <Zap className="w-6 h-6" />
+          Оформить подписку
+        </Link>
+      )}
+      {/* {!hasAnySub && (
         <button
           onClick={handleTrial}
           disabled={trialLoading}
-          className={`w-full p-5 rounded-2xl bg-gradient-to-r from-zoomer-neon-dim to-zoomer-neon text-white font-semibold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity ${trialLoading ? 'opacity-50' : ''}`}
+          className={`w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all ${trialLoading ? 'opacity-50' : ''}`}
         >
           <Zap className="w-6 h-6" />
           {trialLoading ? 'Активируем...' : 'Активировать 5 дней бесплатно'}
         </button>
-      )}
+      )} */}
 
       {hasAnySub && hasAnyKey && (
         <a href={keys.pro_url}
           target="_blank" rel="noopener noreferrer"
-          className="w-full p-5 rounded-2xl bg-gradient-to-r from-zoomer-neon-dim to-zoomer-neon text-white font-semibold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity block text-center"
+          className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"
         >
           <Wifi className="w-6 h-6" />
           Подключить VPN
@@ -319,7 +326,7 @@ function ReferralsTab() {
                 value={ref.referral_link}
                 size={180}
                 bgColor="#ffffff"
-                fgColor="#080b0e"
+                fgColor="#000000"
                 level="M"
               />
             </div>

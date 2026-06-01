@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
             <p>Мы не продаём и не передаём ваши данные третьим лицам, кроме случаев, предусмотренных законодательством.</p>
 
             <h2 className="text-xl font-semibold text-white">5. Контакты</h2>
-            <p>По вопросам конфиденциальности: <a href={TELEGRAM.SUPPORT_URL} className="text-zoomer-neon hover:underline">@goSocialsupp</a></p>
+            <p>По вопросам конфиденциальности: <a href={TELEGRAM.SUPPORT_URL} className="text-zoomer-neon hover:underline">{TELEGRAM.SUPPORT_HANDLE}</a></p>
           </div>
         </div>
       </section>

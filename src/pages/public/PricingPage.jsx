@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Star, Zap, CreditCard } from 'lucide-react';
 import { TARIFFS, PAYMENT_METHODS, ROUTES, BRAND_NAME } from '@utils/constants';
-import { paymentApi, trialApi } from '@services/api';
+import { paymentApi /* , trialApi */ } from '@services/api';
 import useAuthStore from '@stores/authStore';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
@@ -44,29 +44,29 @@ export default function PricingPage() {
     }
   };
 
-  const handleTrialActivate = async () => {
-    if (!isAuthenticated) {
-      toast('Войдите, чтобы активировать триал', { icon: '🔑' });
-      navigate(ROUTES.LOGIN);
-      return;
-    }
-    try {
-      const { data } = await trialApi.activate();
-      if (data.success) {
-        toast.success('Триал активирован! 5 дней бесплатно');
-        navigate(ROUTES.DASHBOARD);
-      }
-    } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации триала';
-      toast.error(msg);
-    }
-  };
+  // const handleTrialActivate = async () => {
+  //   if (!isAuthenticated) {
+  //     toast('Войдите, чтобы активировать триал', { icon: '🔑' });
+  //     navigate(ROUTES.LOGIN);
+  //     return;
+  //   }
+  //   try {
+  //     const { data } = await trialApi.activate();
+  //     if (data.success) {
+  //       toast.success('Триал активирован! 5 дней бесплатно');
+  //       navigate(ROUTES.DASHBOARD);
+  //     }
+  //   } catch (err) {
+  //     const msg = err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации триала';
+  //     toast.error(msg);
+  //   }
+  // };
 
   return (
     <>
       <Helmet>
         <title>Тарифы — {BRAND_NAME}</title>
-        <meta name="description" content={`Тарифы ${BRAND_NAME} от 99 руб. Безлимитный трафик, до 5 устройств, 26 серверов.`} />
+        <meta name="description" content={`Тарифы ${BRAND_NAME} от 349 руб. Безлимитный трафик, до 5 устройств, 26 серверов.`} />
       </Helmet>
 
       <section className="py-20 relative">
@@ -83,12 +83,12 @@ export default function PricingPage() {
             </h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Безлимитный трафик и скорость. Без скрытых платежей.
-              Попробуй 5 дней бесплатно.
+              {/* Попробуй 5 дней бесплатно. */}
             </p>
           </motion.div>
 
-          {/* Free trial banner */}
-          <motion.div
+          {/* Free trial banner — отключено: в 21OpenVPN API нет /trial/activate */}
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -104,10 +104,10 @@ export default function PricingPage() {
             <Button onClick={handleTrialActivate} className="px-6 py-2 text-sm">
               Активировать бесплатно
             </Button>
-          </motion.div>
+          </motion.div> */}
 
           {/* PRO tariffs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12 max-w-4xl mx-auto">
             {proTariffs.map((tariff, index) => (
               <motion.div
                 key={tariff.id}
@@ -123,10 +123,10 @@ export default function PricingPage() {
               >
                 {/* Badge */}
                 {(tariff.popular || tariff.badge) && (
-                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold text-white flex items-center gap-1 ${
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${
                     tariff.promo
-                      ? 'bg-gradient-to-r from-orange-500 to-red-500'
-                      : 'bg-gradient-to-r from-zoomer-neon-dim to-zoomer-neon'
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+                      : 'surface-metallic'
                   }`}>
                     {tariff.popular && <Star className="w-3 h-3" />}
                     {tariff.badge || 'Популярный'}
@@ -181,8 +181,8 @@ export default function PricingPage() {
                       onClick={() => setSelectedMethod(method.id)}
                       className={`p-4 rounded-xl border text-center transition-all ${
                         selectedMethod === method.id
-                          ? 'border-zoomer-neon bg-zoomer-neon/10 text-white'
-                          : 'border-zoomer-border bg-zoomer-card text-gray-400 hover:border-zoomer-neon/30'
+                          ? 'surface-metallic border-transparent shadow-neon'
+                          : 'border-zoomer-border bg-zoomer-card text-gray-400 hover:border-white/20'
                       }`}
                     >
                       <Icon className="w-5 h-5 mx-auto mb-2" />

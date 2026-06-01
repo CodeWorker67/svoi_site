@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Shield, Zap, Globe, Smartphone, Infinity, Clock } from 'lucide-react';
-import { FEATURES } from '@utils/constants';
+import { FEATURES, BRAND_NAME } from '@utils/constants';
 
 const iconMap = { Shield, Zap, Globe, Smartphone, Infinity, Clock };
 
@@ -15,7 +15,7 @@ export default function FeaturesSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Почему <span className="text-gradient">Ускоритель Соцсетей</span>?
+            Почему <span className="text-gradient">{BRAND_NAME}</span>?
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Создан для себя и друзей. Особое внимание к приватности, скорости и стабильности.

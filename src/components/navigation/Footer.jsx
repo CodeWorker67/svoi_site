@@ -10,8 +10,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-zoomer-neon-dim to-zoomer-neon flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 rounded-lg surface-metallic flex items-center justify-center">
+                <Shield className="w-5 h-5 text-black" />
               </div>
               <span className="text-lg font-bold text-white">{BRAND_NAME}</span>
             </div>

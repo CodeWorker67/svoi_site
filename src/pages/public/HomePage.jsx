@@ -10,7 +10,8 @@ export default function HomePage() {
     <>
       <Helmet>
         <title>{BRAND_NAME} — Быстрый и безопасный VPN</title>
-        <meta name="description" content={`${BRAND_NAME} — быстрый и безопасный VPN на базе VLESS Reality. До 10 Гбит/с, серверы в 4 странах. Попробуй 5 дней бесплатно!`} />
+        <meta name="description" content={`${BRAND_NAME} — быстрый и безопасный VPN на базе VLESS Reality. До 10 Гбит/с, серверы в 4 странах.`} />
+        {/* <meta name="description" content={`${BRAND_NAME} — быстрый и безопасный VPN на базе VLESS Reality. До 10 Гбит/с, серверы в 4 странах. Попробуй 5 дней бесплатно!`} /> */}
       </Helmet>
       <HeroSection />
       <FeaturesSection />

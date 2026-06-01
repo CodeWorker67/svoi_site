@@ -32,8 +32,8 @@ export default function LoginPage() {
           className="max-w-md w-full mx-4"
         >
           <div className="card-dark text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-zoomer-neon-dim to-zoomer-neon flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 rounded-2xl surface-metallic flex items-center justify-center mx-auto mb-6">
+              <Shield className="w-8 h-8 text-black" />
             </div>
 
             <h1 className="text-2xl font-bold text-white mb-2">Войти в {BRAND_NAME}</h1>
@@ -44,7 +44,7 @@ export default function LoginPage() {
               <button
                 onClick={() => setAuthMethod('telegram')}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  authMethod === 'telegram' ? 'bg-zoomer-neon text-white' : 'text-gray-400 hover:text-white'
+                  authMethod === 'telegram' ? 'surface-metallic' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <Send className="w-4 h-4" />
@@ -53,7 +53,7 @@ export default function LoginPage() {
               <button
                 onClick={() => setAuthMethod('email')}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  authMethod === 'email' ? 'bg-zoomer-neon text-white' : 'text-gray-400 hover:text-white'
+                  authMethod === 'email' ? 'surface-metallic' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <Mail className="w-4 h-4" />

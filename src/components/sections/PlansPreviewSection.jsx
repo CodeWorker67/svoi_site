@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Check, Star, Zap } from 'lucide-react';
+import { Check, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ROUTES, TARIFFS, TELEGRAM } from '@utils/constants';
+import { ROUTES, TARIFFS } from '@utils/constants';
 import Button from '@components/ui/Button';
 
 const displayTariffs = TARIFFS.filter(t => t.type === 'pro' && !t.promo).slice(0, 3);
@@ -38,7 +38,7 @@ export default function PlansPreviewSection() {
               }`}
             >
               {tariff.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-zoomer-neon-dim to-zoomer-neon rounded-full text-xs font-semibold text-white flex items-center gap-1">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 surface-metallic rounded-full text-xs font-semibold flex items-center gap-1">
                   <Star className="w-3 h-3" /> Популярный
                 </div>
               )}
@@ -72,8 +72,8 @@ export default function PlansPreviewSection() {
           ))}
         </div>
 
-        {/* Free trial CTA */}
-        <motion.div
+        {/* Free trial CTA — отключено: в 21OpenVPN API нет /trial/activate */}
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -86,7 +86,7 @@ export default function PlansPreviewSection() {
             </Button>
           </Link>
           <p className="text-gray-500 text-sm mt-3">Без карты. Активация в Telegram-боте.</p>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

@@ -27,13 +27,13 @@ export default function TermsPage() {
             </ul>
 
             <h2 className="text-xl font-semibold text-white">4. Оплата и возврат</h2>
-            <p>Оплата производится через доступные способы оплаты. Бесплатный пробный период (5 дней) предоставляется однократно. Возврат средств рассматривается индивидуально через поддержку.</p>
+            <p>Оплата производится через доступные способы оплаты. {/* Бесплатный пробный период (5 дней) предоставляется однократно. */} Возврат средств рассматривается индивидуально через поддержку.</p>
 
             <h2 className="text-xl font-semibold text-white">5. Ограничение ответственности</h2>
             <p>Сервис предоставляется «как есть». Мы не гарантируем бесперебойную работу и не несём ответственности за убытки, связанные с использованием VPN.</p>
 
             <h2 className="text-xl font-semibold text-white">6. Контакты</h2>
-            <p>Поддержка: <a href={TELEGRAM.SUPPORT_URL} className="text-zoomer-neon hover:underline">@goSocialsupp</a></p>
+            <p>Поддержка: <a href={TELEGRAM.SUPPORT_URL} className="text-zoomer-neon hover:underline">{TELEGRAM.SUPPORT_HANDLE}</a></p>
           </div>
         </div>
       </section>

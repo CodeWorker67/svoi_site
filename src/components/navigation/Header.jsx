@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Shield } from 'lucide-react';
-import { ROUTES } from '@utils/constants';
+import { ROUTES, BRAND_NAME } from '@utils/constants';
 import useAuthStore from '@stores/authStore';
 import Button from '@components/ui/Button';
 
@@ -24,11 +24,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-zoomer-neon-dim to-zoomer-neon flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 rounded-lg surface-metallic flex items-center justify-center">
+              <Shield className="w-5 h-5 text-black" />
             </div>
             <span className="text-xl font-bold text-white">
-              Ускоритель <span className="text-gradient">Соцсетей</span>
+              {BRAND_NAME.replace(' VPN', '')} <span className="text-gradient">VPN</span>
             </span>
           </Link>
 
@@ -64,9 +64,14 @@ export default function Header() {
                 </Link>
                 <Link to={ROUTES.PRICING}>
                   <Button variant="primary" className="text-sm px-4 py-2">
-                    Попробовать бесплатно
+                    Выбрать тариф
                   </Button>
                 </Link>
+                {/* <Link to={ROUTES.PRICING}>
+                  <Button variant="primary" className="text-sm px-4 py-2">
+                    Попробовать бесплатно
+                  </Button>
+                </Link> */}
               </>
             )}
           </div>
@@ -112,8 +117,11 @@ export default function Header() {
                       <Button variant="secondary" className="w-full text-sm">Войти</Button>
                     </Link>
                     <Link to={ROUTES.PRICING} onClick={() => setMobileOpen(false)}>
-                      <Button variant="primary" className="w-full text-sm">Попробовать бесплатно</Button>
+                      <Button variant="primary" className="w-full text-sm">Выбрать тариф</Button>
                     </Link>
+                    {/* <Link to={ROUTES.PRICING} onClick={() => setMobileOpen(false)}>
+                      <Button variant="primary" className="w-full text-sm">Попробовать бесплатно</Button>
+                    </Link> */}
                   </>
                 )}
               </div>

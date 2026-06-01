@@ -21,8 +21,8 @@ export default function HeroSection() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zoomer-neon/10 border border-zoomer-neon/20 mb-8"
           >
-            <span className="w-2 h-2 rounded-full bg-zoomer-green animate-pulse" />
-            <span className="text-sm text-gray-300">150 000+ пользователей</span>
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <span className="text-sm text-gray-300">100 000+ пользователей</span>
           </motion.div>
 
           {/* Heading */}
@@ -57,13 +57,19 @@ export default function HeroSection() {
           >
             <Link to={ROUTES.PRICING}>
               <Button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center gap-2">
-                Попробовать 5 дней бесплатно
+                Выбрать тариф
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
+            {/* <Link to={ROUTES.PRICING}>
+              <Button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center gap-2">
+                Попробовать 5 дней бесплатно
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </Link> */}
             <Link to={ROUTES.PRICING}>
               <Button variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
-                Тарифы от 99 руб
+                Тарифы от 349 руб
               </Button>
             </Link>
           </motion.div>
@@ -76,7 +82,7 @@ export default function HeroSection() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto"
           >
             {[
-              { icon: Users, value: '150K+', label: 'Пользователей' },
+              { icon: Users, value: '100K+', label: 'Пользователей' },
               { icon: Shield, value: '26', label: 'Серверов' },
               { icon: Zap, value: '10 Гбит/с', label: 'Скорость' },
               { icon: Play, value: '99.9%', label: 'Аптайм' },

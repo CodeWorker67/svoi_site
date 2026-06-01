@@ -76,10 +76,10 @@ export const paymentApi = {
   getStatus: (id) => api.get(`/payments/${id}/status`),
 };
 
-// Trial
-export const trialApi = {
-  activate: () => api.post('/trial/activate'),
-};
+// Trial — в 21OpenVPN API нет POST /trial/activate (только в SocialmediaVPN)
+// export const trialApi = {
+//   activate: () => api.post('/trial/activate'),
+// };
 
 // Config
 export const configApi = {

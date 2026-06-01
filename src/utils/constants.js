@@ -15,12 +15,23 @@ export const ROUTES = {
   TERMS: '/terms',
 };
 
-export const BRAND_NAME = 'Ускоритель Соцсетей';
+export const BRAND_NAME = 'Open21 VPN';
+
+function telegramHandleFromUrl(url, fallback = '') {
+  const match = String(url || '').match(/t\.me\/([^/?#]+)/i);
+  return match ? `@${match[1]}` : fallback;
+}
+
+const telegramBotUrl =
+  import.meta.env.VITE_TELEGRAM_BOT_URL || 'https://t.me/fastmobilevpnbot';
+const telegramSupportUrl =
+  import.meta.env.VITE_TELEGRAM_SUPPORT_URL || 'https://t.me/goSocialsupp';
 
 export const TELEGRAM = {
-  BOT_URL: 'https://t.me/fastmobilevpnbot',
+  BOT_URL: telegramBotUrl,
   BOT_NAME: import.meta.env.VITE_TELEGRAM_BOT_NAME || 'fastmobilevpnbot',
-  SUPPORT_URL: 'https://t.me/goSocialsupp',
+  SUPPORT_URL: telegramSupportUrl,
+  SUPPORT_HANDLE: telegramHandleFromUrl(telegramSupportUrl, '@goSocialsupp'),
   CHANNEL_URL: 'https://t.me/zoomerskydostup',
 };
 
@@ -30,12 +41,11 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
+// Тарифы 21OpenVPN API: GET /api/config/tariffs (30 / 90 / 365)
 export const TARIFFS = [
-  { id: '7',   label: '7 дней',   price: 99,   days: 7,   devices: 5, type: 'pro' },
-  { id: '30',  label: '30 дней',  price: 199,  days: 30,  devices: 5, type: 'pro' },
-  { id: '90',  label: '90 дней (выгода −10%)',  price: 539,  days: 90,  devices: 5, type: 'pro', popular: true },
-  { id: '180', label: '180 дней (выгода −15%)', price: 999,  days: 180, devices: 5, type: 'pro' },
-  { id: '365', label: '365 дней (выгода −30%)', price: 1699, days: 365, devices: 5, type: 'pro' },
+  { id: '30',  label: '1 месяц',  price: 349,  days: 30,  devices: 5, type: 'pro' },
+  { id: '90',  label: '3 месяца (выгода −30%)',  price: 749,  days: 90,  devices: 5, type: 'pro', popular: true },
+  { id: '365', label: '12 месяцев (выгода −60%)', price: 1799, days: 365, devices: 5, type: 'pro' },
 ];
 
 export const PAYMENT_METHODS = [
