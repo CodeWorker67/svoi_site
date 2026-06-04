@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ROUTES, TARIFFS } from '@utils/constants';
+import { ROUTES, DEVICE_TIERS, getPreviewTariffs } from '@utils/constants';
 import Button from '@components/ui/Button';
 
-const displayTariffs = TARIFFS.filter(t => t.type === 'pro' && !t.promo).slice(0, 3);
-
 export default function PlansPreviewSection() {
+  const [selectedDevices, setSelectedDevices] = useState(5);
+  const displayTariffs = getPreviewTariffs(selectedDevices);
+
   return (
     <section className="py-24 relative">
       <div className="absolute inset-0 bg-radial-glow opacity-50" />
@@ -15,14 +17,37 @@ export default function PlansPreviewSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Простые <span className="text-gradient">тарифы</span>
           </h2>
           <p className="text-gray-400">
-            Без скрытых платежей. Безлимитный трафик. До 5 устройств.
+            Без скрытых платежей. Безлимитный трафик. До 10 устройств.
           </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex justify-center mb-10"
+        >
+          <div className="inline-flex gap-1 p-1 bg-zoomer-card rounded-xl border border-zoomer-border">
+            {DEVICE_TIERS.map((devices) => (
+              <button
+                key={devices}
+                onClick={() => setSelectedDevices(devices)}
+                className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  selectedDevices === devices
+                    ? 'surface-metallic shadow-neon'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {devices} {devices === 3 ? 'устройства' : 'устройств'}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
@@ -52,41 +77,24 @@ export default function PlansPreviewSection() {
               </div>
 
               <ul className="space-y-3 text-sm text-gray-300 mb-6 text-left">
-                {['Безлимитный трафик', `До ${tariff.devices} устройств`, '26 серверов', 'VLESS Reality'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-zoomer-green flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
+                {['Безлимитный трафик', `До ${tariff.devices} устройств`, '26 серверов', 'VLESS Reality'].map(
+                  (f, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-zoomer-green flex-shrink-0" />
+                      {f}
+                    </li>
+                  ),
+                )}
               </ul>
 
               <Link to={ROUTES.PRICING}>
-                <Button
-                  variant={tariff.popular ? 'primary' : 'secondary'}
-                  className="w-full text-sm"
-                >
+                <Button variant={tariff.popular ? 'primary' : 'secondary'} className="w-full text-sm">
                   Выбрать
                 </Button>
               </Link>
             </motion.div>
           ))}
         </div>
-
-        {/* Free trial CTA — отключено: в 21OpenVPN API нет /trial/activate */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <Link to={ROUTES.PRICING}>
-            <Button className="px-8 py-4 text-lg flex items-center gap-2 mx-auto">
-              <Zap className="w-5 h-5" />
-              5 дней бесплатно
-            </Button>
-          </Link>
-          <p className="text-gray-500 text-sm mt-3">Без карты. Активация в Telegram-боте.</p>
-        </motion.div> */}
       </div>
     </section>
   );

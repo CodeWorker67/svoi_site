@@ -16,43 +16,42 @@
   .btn-primary {
     @apply surface-metallic font-semibold px-6 py-3 rounded-btn transition-all duration-300 transform hover:scale-105 hover:shadow-neon-hover;
   }
-  /* Светлая металлическая заливка — всегда тёмный текст для контраста */
   .surface-metallic {
-    background: linear-gradient(95deg, #525252 0%, #a3a3a3 28%, #e5e5e5 48%, #fafafa 62%, #d4d4d4 82%, #737373 100%);
-    color: #0a0a0a;
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 30%, #38bdf8 55%, #0ea5e9 75%, #1d4ed8 100%);
+    color: #ffffff;
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.22) inset,
-      0 4px 20px rgba(255, 255, 255, 0.08);
+      0 0 0 1px rgba(56, 189, 248, 0.35) inset,
+      0 4px 24px rgba(37, 99, 235, 0.4);
   }
   .surface-metallic:hover {
-    filter: brightness(1.06);
+    filter: brightness(1.08);
   }
   .surface-metallic-muted {
-    background: linear-gradient(95deg, #404040 0%, #737373 40%, #a3a3a3 70%, #737373 100%);
-    color: #fafafa;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 75%, #1e40af 100%);
+    color: #e0f2fe;
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2) inset;
   }
   .btn-secondary {
-    @apply border-2 border-zoomer-neon text-zoomer-neon hover:bg-zoomer-neon hover:text-black font-semibold px-6 py-3 rounded-btn transition-all duration-300;
+    @apply border-2 border-zoomer-neon text-zoomer-neon hover:bg-zoomer-neon/10 font-semibold px-6 py-3 rounded-btn transition-all duration-300;
   }
   .btn-ghost {
     @apply text-gray-300 hover:text-white hover:bg-white/10 font-medium px-4 py-2 rounded-lg transition-all duration-200;
   }
   .card-dark {
-    @apply bg-zoomer-card rounded-card border border-zoomer-border p-6 shadow-card transition-all duration-300 hover:border-white/20 hover:shadow-neon;
+    @apply bg-zoomer-card rounded-card border border-zoomer-border p-6 shadow-card transition-all duration-300 hover:border-zoomer-neon/30 hover:shadow-neon;
   }
   .input-field {
-    @apply w-full px-4 py-3 bg-zoomer-card border border-zoomer-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition-all duration-300;
+    @apply w-full px-4 py-3 bg-zoomer-card border border-zoomer-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zoomer-neon/40 focus:border-transparent transition-all duration-300;
   }
   .glass-card {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-card;
+    @apply bg-blue-950/20 backdrop-blur-md border border-zoomer-border rounded-card;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(95deg, #525252 0%, #a3a3a3 20%, #e5e5e5 40%, #ffffff 55%, #f5f5f5 70%, #d4d4d4 85%, #737373 100%);
-    background-size: 280% 100%;
+    background: linear-gradient(180deg, #93c5fd 0%, #38bdf8 35%, #2563eb 70%, #1e40af 100%);
+    background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -60,19 +59,19 @@
     animation: titleShimmer 6s ease-in-out infinite;
   }
   .text-gradient-gold {
-    @apply bg-gradient-to-r from-gray-200 to-white bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent;
   }
   .bg-grid {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
     background-size: 60px 60px;
   }
   .bg-radial-glow {
-    background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 60%);
   }
   .bg-page {
-    background: #000000;
+    background: #050a14;
     position: relative;
   }
   .bg-page::before {
@@ -81,7 +80,7 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: linear-gradient(125deg, #000000 0%, #050505 25%, #0a0a0a 50%, #050505 75%, #000000 100%);
+    background: linear-gradient(125deg, #050a14 0%, #0a1628 25%, #0d1b2e 50%, #0a1628 75%, #050a14 100%);
     background-size: 320% 320%;
     animation: bgShimmer 22s ease-in-out infinite;
   }
@@ -92,9 +91,9 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 55% 45% at 30% 40%, rgba(255, 255, 255, 0.06), transparent 58%),
-      radial-gradient(ellipse 50% 40% at 75% 65%, rgba(163, 163, 163, 0.05), transparent 55%),
-      radial-gradient(ellipse 40% 35% at 50% 90%, rgba(255, 255, 255, 0.04), transparent 50%);
+      radial-gradient(ellipse 55% 45% at 30% 40%, rgba(37, 99, 235, 0.12), transparent 58%),
+      radial-gradient(ellipse 50% 40% at 75% 65%, rgba(56, 189, 248, 0.08), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 50% 90%, rgba(30, 111, 255, 0.06), transparent 50%);
     animation: bgGlowDrift 28s ease-in-out infinite alternate;
   }
 }

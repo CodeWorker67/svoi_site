@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Shield, Send, MessageCircle } from 'lucide-react';
+import { Send, MessageCircle } from 'lucide-react';
 import { ROUTES, TELEGRAM, BRAND_NAME } from '@utils/constants';
 
 export default function Footer() {
@@ -9,11 +9,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg surface-metallic flex items-center justify-center">
-                <Shield className="w-5 h-5 text-black" />
-              </div>
-              <span className="text-lg font-bold text-white">{BRAND_NAME}</span>
+            <div className="flex items-center gap-2.5 mb-4">
+              <img src="/logo.png" alt={BRAND_NAME} className="h-9 w-9 rounded-lg object-cover" />
+              <span className="text-lg font-bold text-white">
+                Для <span className="text-gradient">Своих</span>
+              </span>
             </div>
             <p className="text-gray-400 text-sm">
               Быстрый и безопасный VPN на базе VLESS Reality. Создан для свободного интернета.

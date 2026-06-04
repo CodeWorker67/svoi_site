@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Play, Shield, Zap, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { TELEGRAM, ROUTES } from '@utils/constants';
+import { TELEGRAM, ROUTES, BRAND_NAME, MIN_TARIFF_PRICE } from '@utils/constants';
 import Button from '@components/ui/Button';
 
 export default function HeroSection() {
@@ -21,8 +21,8 @@ export default function HeroSection() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zoomer-neon/10 border border-zoomer-neon/20 mb-8"
           >
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            <span className="text-sm text-gray-300">100 000+ пользователей</span>
+            <span className="w-2 h-2 rounded-full bg-zoomer-neon animate-pulse" />
+            <span className="text-sm text-gray-300">150 000+ пользователей</span>
           </motion.div>
 
           {/* Heading */}
@@ -69,7 +69,7 @@ export default function HeroSection() {
             </Link> */}
             <Link to={ROUTES.PRICING}>
               <Button variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
-                Тарифы от 349 руб
+                Тарифы от {MIN_TARIFF_PRICE} руб
               </Button>
             </Link>
           </motion.div>
@@ -82,7 +82,7 @@ export default function HeroSection() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto"
           >
             {[
-              { icon: Users, value: '100K+', label: 'Пользователей' },
+              { icon: Users, value: '150K+', label: 'Пользователей' },
               { icon: Shield, value: '26', label: 'Серверов' },
               { icon: Zap, value: '10 Гбит/с', label: 'Скорость' },
               { icon: Play, value: '99.9%', label: 'Аптайм' },

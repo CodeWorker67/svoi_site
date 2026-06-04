@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { ROUTES, BRAND_NAME } from '@utils/constants';
 import useAuthStore from '@stores/authStore';
 import Button from '@components/ui/Button';
@@ -23,12 +23,10 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg surface-metallic flex items-center justify-center">
-              <Shield className="w-5 h-5 text-black" />
-            </div>
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src="/logo.png" alt={BRAND_NAME} className="h-9 w-9 rounded-lg object-cover" />
             <span className="text-xl font-bold text-white">
-              {BRAND_NAME.replace(' VPN', '')} <span className="text-gradient">VPN</span>
+              Для <span className="text-gradient">Своих</span>
             </span>
           </Link>
 
@@ -40,7 +38,7 @@ export default function Header() {
                 to={link.path}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.path
-                    ? 'text-white bg-white/10'
+                    ? 'text-white bg-zoomer-neon/15'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >

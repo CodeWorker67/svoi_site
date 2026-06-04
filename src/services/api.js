@@ -76,7 +76,7 @@ export const paymentApi = {
   getStatus: (id) => api.get(`/payments/${id}/status`),
 };
 
-// Trial — в 21OpenVPN API нет POST /trial/activate (только в SocialmediaVPN)
+// Trial — в SpeedGamer API нет POST /trial/activate
 // export const trialApi = {
 //   activate: () => api.post('/trial/activate'),
 // };

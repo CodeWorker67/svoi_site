@@ -6,7 +6,7 @@ import { User, Key, Users, LogOut, Shield, Clock, Copy, Check, ExternalLink, Lin
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '@stores/authStore';
 import { userApi, /* trialApi, */ authApi } from '@services/api';
-import { TELEGRAM, ROUTES, BRAND_NAME, PRO_SUBSCRIPTION_LABEL } from '@utils/constants';
+import { TELEGRAM, ROUTES, BRAND_NAME, PRO_SUBSCRIPTION_LABEL, SUBSCRIPTION_SLOTS } from '@utils/constants';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -107,14 +107,13 @@ function OverviewTab() {
   //   }
   // };
 
-  const hasAnySub = sub?.pro?.active;
-  const hasAnyKey = keys?.pro_url;
+  const hasAnySub = SUBSCRIPTION_SLOTS.some((slot) => sub?.[slot.key]?.active);
+  const primaryConnectUrl = SUBSCRIPTION_SLOTS.map((slot) => keys?.[slot.urlKey]).find(Boolean);
 
   if (loading) return <LoadingSkeleton />;
 
   return (
     <div className="space-y-6">
-      {/* CTA — Trial or Setup */}
       {!hasAnySub && (
         <Link to={ROUTES.PRICING}
           className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"
@@ -123,19 +122,9 @@ function OverviewTab() {
           Оформить подписку
         </Link>
       )}
-      {/* {!hasAnySub && (
-        <button
-          onClick={handleTrial}
-          disabled={trialLoading}
-          className={`w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all ${trialLoading ? 'opacity-50' : ''}`}
-        >
-          <Zap className="w-6 h-6" />
-          {trialLoading ? 'Активируем...' : 'Активировать 5 дней бесплатно'}
-        </button>
-      )} */}
 
-      {hasAnySub && hasAnyKey && (
-        <a href={keys.pro_url}
+      {hasAnySub && primaryConnectUrl && (
+        <a href={primaryConnectUrl}
           target="_blank" rel="noopener noreferrer"
           className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"
         >
@@ -144,34 +133,39 @@ function OverviewTab() {
         </a>
       )}
 
-      {/* Subscription */}
-      <div className="max-w-md">
-        <div className="card-dark">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-zoomer-neon/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-zoomer-neon" />
-            </div>
-            <div>
-              <div className="text-white font-semibold">{PRO_SUBSCRIPTION_LABEL}</div>
-              <div className={`text-sm ${sub?.pro?.active ? 'text-zoomer-green' : 'text-red-400'}`}>
-                {sub?.pro?.active ? 'Активна' : 'Не активна'}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {SUBSCRIPTION_SLOTS.map((slot) => {
+          const slotSub = sub?.[slot.key];
+          const isActive = slotSub?.active;
+          return (
+            <div key={slot.key} className="card-dark">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-zoomer-neon/10 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-zoomer-neon" />
+                </div>
+                <div>
+                  <div className="text-white font-semibold">{slot.label}</div>
+                  <div className={`text-sm ${isActive ? 'text-zoomer-green' : 'text-red-400'}`}>
+                    {isActive ? 'Активна' : 'Не активна'}
+                  </div>
+                </div>
               </div>
+              {slotSub?.expires && (
+                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                  <Clock className="w-4 h-4" />
+                  До: {slotSub.expires}
+                </div>
+              )}
+              {!isActive && (
+                <div className="mt-4">
+                  <Link to={ROUTES.PRICING}>
+                    <Button className="w-full text-sm">Купить подписку</Button>
+                  </Link>
+                </div>
+              )}
             </div>
-          </div>
-          {sub?.pro?.expires && (
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <Clock className="w-4 h-4" />
-              До: {sub.pro.expires}
-            </div>
-          )}
-          {!sub?.pro?.active && (
-            <div className="mt-4">
-              <Link to={ROUTES.PRICING}>
-                <Button className="w-full text-sm">Купить подписку</Button>
-              </Link>
-            </div>
-          )}
-        </div>
+          );
+        })}
       </div>
 
       {/* Quick actions */}
@@ -213,37 +207,50 @@ function KeysTab() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const activeKeys = SUBSCRIPTION_SLOTS.filter((slot) => keys?.[slot.urlKey]);
+
   if (loading) return <LoadingSkeleton />;
 
   return (
     <div className="space-y-4">
-      {keys?.pro_url && (
-        <div className="card-dark">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-zoomer-neon" />
-              <span className="text-white font-semibold">{PRO_SUBSCRIPTION_LABEL}</span>
+      {activeKeys.map((slot) => {
+        const url = keys[slot.urlKey];
+        return (
+          <div key={slot.key} className="card-dark">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-zoomer-neon" />
+                <span className="text-white font-semibold">{slot.label}</span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => copyUrl(url, slot.key)}
+                  className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                >
+                  {copied === slot.key ? (
+                    <Check className="w-4 h-4 text-zoomer-green" />
+                  ) : (
+                    <Copy className="w-4 h-4 text-gray-400" />
+                  )}
+                </button>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                </a>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => copyUrl(keys.pro_url, 'pro')}
-                className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-              >
-                {copied === 'pro' ? <Check className="w-4 h-4 text-zoomer-green" /> : <Copy className="w-4 h-4 text-gray-400" />}
-              </button>
-              <a href={keys.pro_url} target="_blank" rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                <ExternalLink className="w-4 h-4 text-gray-400" />
-              </a>
+            <div className="p-3 bg-zoomer-dark rounded-lg">
+              <code className="text-xs text-gray-400 break-all">{url}</code>
             </div>
           </div>
-          <div className="p-3 bg-zoomer-dark rounded-lg">
-            <code className="text-xs text-gray-400 break-all">{keys.pro_url}</code>
-          </div>
-        </div>
-      )}
+        );
+      })}
 
-      {!keys?.pro_url && (
+      {activeKeys.length === 0 && (
         <div className="card-dark text-center py-12">
           <Key className="w-12 h-12 text-gray-600 mx-auto mb-4" />
           <p className="text-gray-400 mb-4">У вас пока нет активных ключей</p>
