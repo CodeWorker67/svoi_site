@@ -13,6 +13,8 @@ export const ROUTES = {
   SUCCESS: '/success',
   PRIVACY_POLICY: '/privacy',
   TERMS: '/terms',
+  /** Одноразовая активация подарка без Telegram (?uuid или ?id=uuid) */
+  GIFT: '/gift',
 };
 
 export const BRAND_NAME = 'Для Своих';
