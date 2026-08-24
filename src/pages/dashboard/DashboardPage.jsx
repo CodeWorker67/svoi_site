@@ -114,6 +114,16 @@ function OverviewTab() {
 
   return (
     <div className="space-y-6">
+      <a
+        href={TELEGRAM.BOT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center transition-all"
+      >
+        <Send className="absolute left-5 w-6 h-6" />
+        <span className="px-10">Перейти в Telegram бот</span>
+      </a>
+
       {!hasAnySub && (
         <Link to={ROUTES.PRICING}
           className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"

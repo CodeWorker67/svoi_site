@@ -54,23 +54,23 @@ export const DEVICE_TIERS = [3, 5, 10];
 
 // Тарифы SpeedGamer API: GET /api/config/tariffs (m{months}_d{devices})
 export const TARIFFS = [
-  { id: 'm1_d3', label: '1 месяц', price: 199, days: 30, devices: 3, type: 'pro' },
-  { id: 'm3_d3', label: '3 месяца (выгода −16%)', price: 499, days: 90, devices: 3, type: 'pro' },
-  { id: 'm6_d3', label: '6 месяцев (выгода −16%)', price: 999, days: 180, devices: 3, type: 'pro' },
   { id: 'm12_d3', label: '12 месяцев (выгода −50%)', price: 1188, days: 365, devices: 3, type: 'pro' },
+  { id: 'm6_d3', label: '6 месяцев (выгода −16%)', price: 999, days: 180, devices: 3, type: 'pro' },
+  { id: 'm3_d3', label: '3 месяца (выгода −16%)', price: 499, days: 90, devices: 3, type: 'pro' },
+  { id: 'm1_d3', label: '1 месяц', price: 199, days: 30, devices: 3, type: 'pro' },
 
-  { id: 'm1_d5', label: '1 месяц', price: 299, days: 30, devices: 5, type: 'pro' },
-  { id: 'm3_d5', label: '3 месяца (выгода −16%)', price: 749, days: 90, devices: 5, type: 'pro', popular: true },
-  { id: 'm6_d5', label: '6 месяцев (выгода −25%)', price: 1349, days: 180, devices: 5, type: 'pro' },
   { id: 'm12_d5', label: '12 месяцев (выгода −50%)', price: 1799, days: 365, devices: 5, type: 'pro' },
+  { id: 'm6_d5', label: '6 месяцев (выгода −25%)', price: 1349, days: 180, devices: 5, type: 'pro' },
+  { id: 'm3_d5', label: '3 месяца (выгода −16%)', price: 749, days: 90, devices: 5, type: 'pro', popular: true },
+  { id: 'm1_d5', label: '1 месяц', price: 299, days: 30, devices: 5, type: 'pro' },
 
-  { id: 'm1_d10', label: '1 месяц', price: 659, days: 30, devices: 10, type: 'pro' },
-  { id: 'm3_d10', label: '3 месяца (выгода −32%)', price: 1349, days: 90, devices: 10, type: 'pro' },
-  { id: 'm6_d10', label: '6 месяцев (выгода −39%)', price: 2399, days: 180, devices: 10, type: 'pro' },
   { id: 'm12_d10', label: '12 месяцев (выгода −59%)', price: 3239, days: 365, devices: 10, type: 'pro' },
+  { id: 'm6_d10', label: '6 месяцев (выгода −39%)', price: 2399, days: 180, devices: 10, type: 'pro' },
+  { id: 'm3_d10', label: '3 месяца (выгода −32%)', price: 1349, days: 90, devices: 10, type: 'pro' },
+  { id: 'm1_d10', label: '1 месяц', price: 659, days: 30, devices: 10, type: 'pro' },
 ];
 
-export const PREVIEW_TARIFF_SUFFIXES = ['m1', 'm3', 'm12'];
+export const PREVIEW_TARIFF_SUFFIXES = ['m12', 'm3', 'm1'];
 
 export const MIN_TARIFF_PRICE = 199;
 
