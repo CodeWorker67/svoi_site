@@ -10,6 +10,7 @@ import Footer from '@components/navigation/Footer';
 import Button from '@components/ui/Button';
 import { ROUTES } from '@utils/constants';
 import { captureStampFromUrl } from '@utils/stamp';
+import { capturePartnerFromUrl } from '@utils/partner';
 
 import HomePage from '@pages/public/HomePage';
 
@@ -88,6 +89,7 @@ function App() {
   useEffect(() => {
     loadFromStorage();
     captureStampFromUrl();
+    capturePartnerFromUrl();
   }, [loadFromStorage]);
 
   return (

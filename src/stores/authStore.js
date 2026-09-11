@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { authApi, AUTH_TOKEN_STORAGE_KEY } from '@services/api';
 import { clearStoredStamp, getStoredStamp } from '@utils/stamp';
+import { clearStoredPartner, getStoredPartner } from '@utils/partner';
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -36,13 +37,18 @@ const useAuthStore = create((set, get) => ({
   botLogin: async (oneTimeToken) => {
     set({ isLoading: true });
     try {
-      const response = await authApi.botLogin({ token: oneTimeToken });
+      const partner = getStoredPartner();
+      const response = await authApi.botLogin({
+        token: oneTimeToken,
+        ...(partner && { partner }),
+      });
       const { data } = response;
       const jwt =
         data.token ||
         response.headers['x-auth-token'] ||
         response.headers['X-Auth-Token'];
       get()._setAuth(data.user, jwt);
+      clearStoredPartner();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -60,8 +66,13 @@ const useAuthStore = create((set, get) => ({
   telegramLogin: async (telegramData) => {
     set({ isLoading: true });
     try {
-      const { data } = await authApi.telegramLogin(telegramData);
+      const partner = getStoredPartner();
+      const { data } = await authApi.telegramLogin({
+        ...telegramData,
+        ...(partner && { partner }),
+      });
       get()._setAuth(data.user, data.token);
+      clearStoredPartner();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -84,16 +95,19 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const stamp = getStoredStamp();
+      const partner = getStoredPartner();
       const { data } = await authApi.register({
         email,
         password,
         ...(stamp && { stamp }),
+        ...(partner && { partner }),
       });
       set({ isLoading: false });
       if (data.requires_verification) {
         return { success: true, requiresVerification: true, email: data.email };
       }
       clearStoredStamp();
+      clearStoredPartner();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -120,9 +134,15 @@ const useAuthStore = create((set, get) => ({
   verifyEmail: async (email, code) => {
     set({ isLoading: true });
     try {
-      const { data } = await authApi.verifyEmail({ email, code });
+      const partner = getStoredPartner();
+      const { data } = await authApi.verifyEmail({
+        email,
+        code,
+        ...(partner && { partner }),
+      });
       get()._setAuth(data.user, data.token);
       clearStoredStamp();
+      clearStoredPartner();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -134,12 +154,15 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const stamp = getStoredStamp();
+      const partner = getStoredPartner();
       const { data } = await authApi.googleLogin({
         credential,
         ...(stamp && { stamp }),
+        ...(partner && { partner }),
       });
       get()._setAuth(data.user, data.token);
       clearStoredStamp();
+      clearStoredPartner();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
