@@ -79,8 +79,16 @@ function OverviewTab() {
   const [sub, setSub] = useState(null);
   const [keys, setKeys] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(null);
   // const [trialLoading, setTrialLoading] = useState(false);
   const navigate = useNavigate();
+
+  const copyUrl = (url, id) => {
+    navigator.clipboard.writeText(url);
+    setCopied(id);
+    toast.success('Скопировано!');
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   useEffect(() => {
     Promise.all([
@@ -147,19 +155,50 @@ function OverviewTab() {
         {SUBSCRIPTION_SLOTS.map((slot) => {
           const slotSub = sub?.[slot.key];
           const isActive = slotSub?.active;
+          const url = keys?.[slot.urlKey];
           return (
             <div key={slot.key} className="card-dark">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-zoomer-neon/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-zoomer-neon" />
-                </div>
-                <div>
-                  <div className="text-white font-semibold">{slot.label}</div>
-                  <div className={`text-sm ${isActive ? 'text-zoomer-green' : 'text-red-400'}`}>
-                    {isActive ? 'Активна' : 'Не активна'}
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-zoomer-neon/10 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-5 h-5 text-zoomer-neon" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-white font-semibold">{slot.label}</div>
+                    <div className={`text-sm ${isActive ? 'text-zoomer-green' : 'text-red-400'}`}>
+                      {isActive ? 'Активна' : 'Не активна'}
+                    </div>
                   </div>
                 </div>
+                {isActive && url && (
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => copyUrl(url, slot.key)}
+                      className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      {copied === slot.key ? (
+                        <Check className="w-4 h-4 text-zoomer-green" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-gray-400" />
+                      )}
+                    </button>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4 text-gray-400" />
+                    </a>
+                  </div>
+                )}
               </div>
+              {isActive && url && (
+                <div className="p-3 bg-zoomer-dark rounded-lg mb-3">
+                  <code className="text-xs text-gray-400 break-all">{url}</code>
+                </div>
+              )}
               {slotSub?.expires && (
                 <div className="flex items-center gap-2 text-gray-400 text-sm">
                   <Clock className="w-4 h-4" />
