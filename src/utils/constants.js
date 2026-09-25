@@ -15,6 +15,7 @@ export const ROUTES = {
   TERMS: '/terms',
   /** Одноразовая активация подарка без Telegram (?uuid или ?id=uuid) */
   GIFT: '/gift',
+  TRAFFIC_BUY: '/traffic_buy',
 };
 
 export const BRAND_NAME = 'Для Своих';
@@ -90,6 +91,16 @@ export function getTariffsByDevices(devices) {
 export const PAYMENT_METHODS = [
   { id: 'sbp', label: 'СБП', icon: 'Zap' },
   { id: 'card', label: 'Карта РФ', icon: 'CreditCard' },
+];
+
+/** Пакеты доп. трафика (GB → ₽), от большего к меньшему — как в боте */
+export const TRAFFIC_PACKAGES = [
+  { gb: '500', price: 1249 },
+  { gb: '250', price: 629 },
+  { gb: '100', price: 259 },
+  { gb: '50', price: 149 },
+  { gb: '20', price: 79 },
+  { gb: '10', price: 50 },
 ];
 
 export const FEATURES = [

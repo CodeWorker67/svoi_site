@@ -26,6 +26,7 @@ const SuccessPage = lazy(() => import('@pages/checkout/SuccessPage'));
 const PrivacyPolicyPage = lazy(() => import('@pages/public/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('@pages/public/TermsPage'));
 const GiftPage = lazy(() => import('@pages/gift/GiftPage'));
+const TrafficBuyPage = lazy(() => import('@pages/public/TrafficBuyPage'));
 
 const PageLoader = () => <div className="min-h-screen" />;
 
@@ -54,6 +55,7 @@ function AppShell() {
             <Route path={ROUTES.GIFT} element={<GiftPage />} />
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.PRICING} element={<PricingPage />} />
+            <Route path={ROUTES.TRAFFIC_BUY} element={<TrafficBuyPage />} />
             <Route path={ROUTES.SETUP} element={<SetupPage />} />
             <Route path={ROUTES.SUPPORT} element={<SupportPage />} />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />

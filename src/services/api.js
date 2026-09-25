@@ -68,11 +68,13 @@ export const userApi = {
   profile: () => api.get('/user/profile'),
   account: () => api.get('/user/account'),
   changePassword: (data) => api.post('/user/change-password', data),
+  wlTraffic: () => api.get('/user/wl-traffic'),
 };
 
 // Payments
 export const paymentApi = {
   createPayment: (data) => api.post('/payments/create', data),
+  createTrafficPayment: (data) => api.post('/payments/create-traffic', data),
   getStatus: (id) => api.get(`/payments/${id}/status`),
 };
 
@@ -84,6 +86,7 @@ export const paymentApi = {
 // Config
 export const configApi = {
   tariffs: () => api.get('/config/tariffs'),
+  trafficPackages: () => api.get('/config/traffic-packages'),
 };
 
 // Gifts
