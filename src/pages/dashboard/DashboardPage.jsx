@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
-import { User, Key, Users, LogOut, Shield, Clock, Copy, Check, ExternalLink, Link2, Send, Mail, Zap, Wifi } from 'lucide-react';
+import { User, Key, Users, LogOut, Shield, Clock, Copy, Check, ExternalLink, Link2, Send, Mail, Zap, Wifi, PlusCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '@stores/authStore';
-import { userApi, /* trialApi, */ authApi } from '@services/api';
-import { TELEGRAM, ROUTES, BRAND_NAME, PRO_SUBSCRIPTION_LABEL, SUBSCRIPTION_SLOTS } from '@utils/constants';
+import { userApi, trialApi, authApi } from '@services/api';
+import { TELEGRAM, ROUTES, BRAND_NAME, PRO_SUBSCRIPTION_LABEL } from '@utils/constants';
+import { subscriptionSlotsForUi } from '@utils/pricing';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -78,10 +79,11 @@ export default function DashboardPage() {
 function OverviewTab() {
   const [sub, setSub] = useState(null);
   const [keys, setKeys] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [wlTraffic, setWlTraffic] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(null);
-  // const [trialLoading, setTrialLoading] = useState(false);
+  const [trialLoading, setTrialLoading] = useState(false);
   const navigate = useNavigate();
 
   const copyUrl = (url, id) => {
@@ -95,30 +97,38 @@ function OverviewTab() {
     Promise.all([
       userApi.subscription().then(({ data }) => setSub(data)).catch(() => null),
       userApi.keys().then(({ data }) => setKeys(data)).catch(() => null),
+      userApi.profile().then(({ data }) => setProfile(data)).catch(() => null),
       userApi.wlTraffic().then(({ data }) => setWlTraffic(data)).catch(() => null),
     ]).finally(() => setLoading(false));
   }, []);
 
-  // const handleTrial = async () => {
-  //   setTrialLoading(true);
-  //   try {
-  //     const { data } = await trialApi.activate();
-  //     if (data.success) {
-  //       toast.success('Триал активирован! 5 дней бесплатно');
-  //       const { data: newSub } = await userApi.subscription();
-  //       setSub(newSub);
-  //       const { data: newKeys } = await userApi.keys();
-  //       setKeys(newKeys);
-  //     }
-  //   } catch (err) {
-  //     toast.error(err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации');
-  //   } finally {
-  //     setTrialLoading(false);
-  //   }
-  // };
+  const handleTrial = async () => {
+    setTrialLoading(true);
+    try {
+      const { data } = await trialApi.activate();
+      if (data.success) {
+        toast.success('Триал активирован! 1 день бесплатно');
+        const { data: newSub } = await userApi.subscription();
+        setSub(newSub);
+        const { data: newKeys } = await userApi.keys();
+        setKeys(newKeys);
+        const { data: newProfile } = await userApi.profile();
+        setProfile(newProfile);
+        const { data: newWl } = await userApi.wlTraffic();
+        setWlTraffic(newWl);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.detail || err.response?.data?.error || 'Ошибка активации');
+    } finally {
+      setTrialLoading(false);
+    }
+  };
 
-  const hasAnySub = SUBSCRIPTION_SLOTS.some((slot) => sub?.[slot.key]?.active);
-  const primaryConnectUrl = SUBSCRIPTION_SLOTS.map((slot) => keys?.[slot.urlKey]).find(Boolean);
+  const mainDevices = profile?.main_devices ?? 5;
+  const slots = subscriptionSlotsForUi(sub, mainDevices);
+  const hasAnySub = slots.some((slot) => sub?.[slot.key]?.active);
+  const primaryConnectUrl = slots.map((slot) => keys?.[slot.urlKey]).find(Boolean);
+  const showAddDevices = Boolean(profile?.main_subscription_active);
   const proActive = hasAnySub;
   const showWlUsage = proActive && wlTraffic && (wlTraffic.limit_gb > 0 || wlTraffic.used_gb > 0);
   const wlLimitExhausted =
@@ -141,12 +151,27 @@ function OverviewTab() {
       </a>
 
       {!hasAnySub && (
-        <Link to={ROUTES.PRICING}
-          className="w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center"
-        >
-          <Zap className="w-6 h-6" />
-          Оформить подписку
-        </Link>
+        <>
+          <button
+            type="button"
+            onClick={handleTrial}
+            disabled={trialLoading}
+            className={`relative w-full p-5 rounded-2xl surface-metallic font-semibold text-lg flex items-center justify-center transition-all ${
+              trialLoading ? 'opacity-50' : ''
+            }`}
+          >
+            <Zap className="absolute left-5 w-6 h-6" />
+            <span className="px-10">
+              {trialLoading ? 'Активируем…' : 'Активировать 1 день бесплатно'}
+            </span>
+          </button>
+          <Link
+            to={ROUTES.PRICING}
+            className="w-full p-5 rounded-2xl bg-white/5 border border-zoomer-border font-semibold text-lg flex items-center justify-center gap-3 transition-all block text-center text-gray-200 hover:border-white/20"
+          >
+            Оформить подписку
+          </Link>
+        </>
       )}
 
       {hasAnySub && primaryConnectUrl && (
@@ -159,8 +184,8 @@ function OverviewTab() {
         </a>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {SUBSCRIPTION_SLOTS.map((slot) => {
+      <div className="grid grid-cols-1 gap-4">
+        {slots.map((slot) => {
           const slotSub = sub?.[slot.key];
           const isActive = slotSub?.active;
           const url = keys?.[slot.urlKey];
@@ -281,6 +306,13 @@ function OverviewTab() {
             <Key className="w-5 h-5 text-zoomer-neon mx-auto mb-2" />
             <div className="text-sm text-gray-300">Продлить подписку</div>
           </Link>
+          {showAddDevices && (
+            <Link to={ROUTES.ADD_DEVICE}
+              className="p-4 rounded-xl bg-white/5 border border-zoomer-border hover:border-zoomer-neon/30 transition-colors text-center">
+              <PlusCircle className="w-5 h-5 text-zoomer-neon mx-auto mb-2" />
+              <div className="text-sm text-gray-300">Добавить устройство</div>
+            </Link>
+          )}
           <a href={TELEGRAM.SUPPORT_URL} target="_blank" rel="noopener noreferrer"
             className="p-4 rounded-xl bg-white/5 border border-zoomer-border hover:border-zoomer-neon/30 transition-colors text-center">
             <Users className="w-5 h-5 text-zoomer-neon mx-auto mb-2" />
@@ -294,12 +326,17 @@ function OverviewTab() {
 
 function KeysTab() {
   const [keys, setKeys] = useState(null);
+  const [sub, setSub] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(null);
 
   useEffect(() => {
-    userApi.keys()
-      .then(({ data }) => setKeys(data))
+    Promise.all([
+      userApi.keys().then(({ data }) => setKeys(data)),
+      userApi.subscription().then(({ data }) => setSub(data)),
+      userApi.profile().then(({ data }) => setProfile(data)),
+    ])
       .catch(() => setKeys(null))
       .finally(() => setLoading(false));
   }, []);
@@ -311,7 +348,8 @@ function KeysTab() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const activeKeys = SUBSCRIPTION_SLOTS.filter((slot) => keys?.[slot.urlKey]);
+  const slots = subscriptionSlotsForUi(sub, profile?.main_devices ?? 5);
+  const activeKeys = slots.filter((slot) => keys?.[slot.urlKey]);
 
   if (loading) return <LoadingSkeleton />;
 
@@ -403,7 +441,9 @@ function ReferralsTab() {
           <div className="text-gray-400 text-sm">Оплативших</div>
         </div>
         <div className="card-dark text-center">
-          <div className="text-3xl font-bold text-zoomer-green mb-1">+{(ref?.paid_count || 0) * 7}</div>
+          <div className="text-3xl font-bold text-zoomer-green mb-1">
+            +{ref?.bonus_days ?? (ref?.paid_count || 0) * 7}
+          </div>
           <div className="text-gray-400 text-sm">Бонусных дней</div>
         </div>
       </div>
@@ -441,12 +481,20 @@ function ReferralsTab() {
                 value={ref.referral_link}
                 size={180}
                 bgColor="#ffffff"
-                fgColor="#000000"
+                fgColor="#080b0e"
                 level="M"
               />
             </div>
           </div>
-          <p className="text-gray-500 text-xs text-center mt-3">Покажите QR-код другу для быстрой регистрации</p>
+          <p className="text-gray-500 text-xs text-center mt-3">
+            Покажите QR-код другу для быстрой регистрации
+          </p>
+        </div>
+      )}
+
+      {!ref?.referral_link && (
+        <div className="card-dark text-center py-8 text-gray-400 text-sm">
+          Реферальная ссылка недоступна. Укажите PUBLIC_SITE_URL (или SITE_URL) в .env API.
         </div>
       )}
     </div>

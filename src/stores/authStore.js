@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { authApi, AUTH_TOKEN_STORAGE_KEY } from '@services/api';
 import { clearStoredStamp, getStoredStamp } from '@utils/stamp';
 import { clearStoredPartner, getStoredPartner } from '@utils/partner';
+import { clearStoredRef, getStoredRef } from '@utils/ref';
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -38,9 +39,11 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const partner = getStoredPartner();
+      const ref = getStoredRef();
       const response = await authApi.botLogin({
         token: oneTimeToken,
         ...(partner && { partner }),
+        ...(ref && { ref }),
       });
       const { data } = response;
       const jwt =
@@ -49,6 +52,7 @@ const useAuthStore = create((set, get) => ({
         response.headers['X-Auth-Token'];
       get()._setAuth(data.user, jwt);
       clearStoredPartner();
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -67,12 +71,15 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const partner = getStoredPartner();
+      const ref = getStoredRef();
       const { data } = await authApi.telegramLogin({
         ...telegramData,
         ...(partner && { partner }),
+        ...(ref && { ref }),
       });
       get()._setAuth(data.user, data.token);
       clearStoredPartner();
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -96,11 +103,13 @@ const useAuthStore = create((set, get) => ({
     try {
       const stamp = getStoredStamp();
       const partner = getStoredPartner();
+      const ref = getStoredRef();
       const { data } = await authApi.register({
         email,
         password,
         ...(stamp && { stamp }),
         ...(partner && { partner }),
+        ...(ref && { ref }),
       });
       set({ isLoading: false });
       if (data.requires_verification) {
@@ -108,6 +117,7 @@ const useAuthStore = create((set, get) => ({
       }
       clearStoredStamp();
       clearStoredPartner();
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -118,8 +128,14 @@ const useAuthStore = create((set, get) => ({
   emailLogin: async (email, password) => {
     set({ isLoading: true });
     try {
-      const { data } = await authApi.login({ email, password });
+      const ref = getStoredRef();
+      const { data } = await authApi.login({
+        email,
+        password,
+        ...(ref && { ref }),
+      });
       get()._setAuth(data.user, data.token);
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -135,14 +151,17 @@ const useAuthStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const partner = getStoredPartner();
+      const ref = getStoredRef();
       const { data } = await authApi.verifyEmail({
         email,
         code,
         ...(partner && { partner }),
+        ...(ref && { ref }),
       });
       get()._setAuth(data.user, data.token);
       clearStoredStamp();
       clearStoredPartner();
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });
@@ -155,14 +174,17 @@ const useAuthStore = create((set, get) => ({
     try {
       const stamp = getStoredStamp();
       const partner = getStoredPartner();
+      const ref = getStoredRef();
       const { data } = await authApi.googleLogin({
         credential,
         ...(stamp && { stamp }),
         ...(partner && { partner }),
+        ...(ref && { ref }),
       });
       get()._setAuth(data.user, data.token);
       clearStoredStamp();
       clearStoredPartner();
+      clearStoredRef();
       return { success: true };
     } catch (error) {
       set({ isLoading: false });

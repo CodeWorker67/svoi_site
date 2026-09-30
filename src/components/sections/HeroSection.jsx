@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Play, Shield, Zap, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { TELEGRAM, ROUTES, BRAND_NAME, MIN_TARIFF_PRICE } from '@utils/constants';
+import { TELEGRAM, ROUTES } from '@utils/constants';
 import Button from '@components/ui/Button';
 
 export default function HeroSection() {
@@ -45,7 +45,7 @@ export default function HeroSection() {
             className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto"
           >
             VLESS Reality протокол. До 10 Гбит/с. Серверы в 4 странах.
-            YouTube, Discord, Telegram и весь интернет без блокировок.
+            Подписка от 5 до 15 устройств — YouTube, Discord и весь интернет без блокировок.
           </motion.p>
 
           {/* CTAs */}
@@ -76,7 +76,7 @@ export default function HeroSection() {
               </Link>
               <Link to={ROUTES.PRICING} className="block">
                 <Button variant="secondary" className="w-full text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
-                  Тарифы от {MIN_TARIFF_PRICE} руб
+                  Попробовать 1 день бесплатно
                 </Button>
               </Link>
             </div>

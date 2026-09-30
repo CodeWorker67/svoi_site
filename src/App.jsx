@@ -11,6 +11,7 @@ import Button from '@components/ui/Button';
 import { ROUTES } from '@utils/constants';
 import { captureStampFromUrl } from '@utils/stamp';
 import { capturePartnerFromUrl } from '@utils/partner';
+import { captureRefFromUrl } from '@utils/ref';
 
 import HomePage from '@pages/public/HomePage';
 
@@ -27,6 +28,7 @@ const PrivacyPolicyPage = lazy(() => import('@pages/public/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('@pages/public/TermsPage'));
 const GiftPage = lazy(() => import('@pages/gift/GiftPage'));
 const TrafficBuyPage = lazy(() => import('@pages/public/TrafficBuyPage'));
+const AddDevicePage = lazy(() => import('@pages/dashboard/AddDevicePage'));
 
 const PageLoader = () => <div className="min-h-screen" />;
 
@@ -69,6 +71,14 @@ function AppShell() {
             <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
             <Route path={ROUTES.TERMS} element={<TermsPage />} />
             <Route
+              path={ROUTES.ADD_DEVICE}
+              element={
+                <ProtectedRoute>
+                  <AddDevicePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/dashboard/*"
               element={
                 <ProtectedRoute>
@@ -92,6 +102,7 @@ function App() {
     loadFromStorage();
     captureStampFromUrl();
     capturePartnerFromUrl();
+    captureRefFromUrl();
   }, [loadFromStorage]);
 
   return (

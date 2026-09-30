@@ -1,13 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ROUTES, DEVICE_TIERS, getPreviewTariffs } from '@utils/constants';
+import { ROUTES, DEFAULT_DEVICES_MIN } from '@utils/constants';
+import { devicesLabel } from '@utils/pricing';
+import { configApi } from '@services/api';
 import Button from '@components/ui/Button';
 
+const FALLBACK = [
+  { id: 'm3_d5', label: '3 месяца (выгода)', price: 749, days: 90, popular: true },
+  { id: 'm1_d5', label: '1 месяц', price: 299, days: 30, popular: false },
+];
+
+const PLAN_ORDER = ['m3_d5', 'm1_d5'];
+
 export default function PlansPreviewSection() {
-  const [selectedDevices, setSelectedDevices] = useState(5);
-  const displayTariffs = getPreviewTariffs(selectedDevices);
+  const [plans, setPlans] = useState(FALLBACK);
+
+  useEffect(() => {
+    configApi
+      .tariffs()
+      .then(({ data }) => {
+        const list = data?.tariffs ?? (Array.isArray(data) ? data : []);
+        const filtered = list.filter((t) => t.id === 'm1_d5' || t.id === 'm3_d5');
+        filtered.sort(
+          (a, b) => PLAN_ORDER.indexOf(a.id) - PLAN_ORDER.indexOf(b.id),
+        );
+        if (filtered.length >= 2) {
+          setPlans(
+            filtered.map((t) => ({
+              id: t.id,
+              label: t.id === 'm3_d5' ? '3 месяца (выгода)' : '1 месяц',
+              price: t.price,
+              days: t.id === 'm3_d5' ? 90 : 30,
+              popular: t.id === 'm3_d5',
+            })),
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="py-24 relative">
@@ -23,35 +55,12 @@ export default function PlansPreviewSection() {
             Простые <span className="text-gradient">тарифы</span>
           </h2>
           <p className="text-gray-400">
-            Без скрытых платежей. Безлимитный трафик. До 10 устройств.
+            {devicesLabel(DEFAULT_DEVICES_MIN)} в базе · можно увеличить до 15 на странице тарифов
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center mb-10"
-        >
-          <div className="inline-flex gap-1 p-1 bg-zoomer-card rounded-xl border border-zoomer-border">
-            {DEVICE_TIERS.map((devices) => (
-              <button
-                key={devices}
-                onClick={() => setSelectedDevices(devices)}
-                className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  selectedDevices === devices
-                    ? 'surface-metallic shadow-neon'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {devices} {devices === 3 ? 'устройства' : 'устройств'}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-          {displayTariffs.map((tariff, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-10">
+          {plans.map((tariff, index) => (
             <motion.div
               key={tariff.id}
               initial={{ opacity: 0, y: 20 }}
@@ -77,14 +86,17 @@ export default function PlansPreviewSection() {
               </div>
 
               <ul className="space-y-3 text-sm text-gray-300 mb-6 text-left">
-                {['Безлимитный трафик', `До ${tariff.devices} устройств`, '26 серверов', 'VLESS Reality'].map(
-                  (f, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-zoomer-green flex-shrink-0" />
-                      {f}
-                    </li>
-                  ),
-                )}
+                {[
+                  'Безлимитный трафик',
+                  `${devicesLabel(DEFAULT_DEVICES_MIN)} (расширяется)`,
+                  '26 серверов',
+                  'VLESS Reality',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-zoomer-green flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
               </ul>
 
               <Link to={ROUTES.PRICING}>

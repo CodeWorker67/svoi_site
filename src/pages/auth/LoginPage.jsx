@@ -8,6 +8,7 @@ import useAuthStore from '@stores/authStore';
 import { authApi } from '@services/api';
 import { ROUTES, GOOGLE_CLIENT_ID, BRAND_NAME, TELEGRAM } from '@utils/constants';
 import { capturePartnerFromUrl } from '@utils/partner';
+import { captureRefFromUrl } from '@utils/ref';
 import Button from '@components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -18,6 +19,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     capturePartnerFromUrl();
+    captureRefFromUrl();
     if (isAuthenticated) navigate(ROUTES.DASHBOARD);
   }, [isAuthenticated, navigate]);
 
